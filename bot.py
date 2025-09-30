@@ -37,6 +37,11 @@ async def on_ready():
 @bot.command()
 async def learn(ctx, *, info):
     """Staff teaches the bot something"""
+    # Only trigger if bot was pinged OR this message is a reply to the bot
+    if not (bot.user.mentioned_in(ctx.message) or 
+            (ctx.message.reference and ctx.message.reference.resolved and ctx.message.reference.resolved.author == bot.user)):
+        return
+
     if ctx.author.guild_permissions.administrator:  # only admins can teach
         knowledge.append(info)
         save_knowledge()
@@ -44,14 +49,19 @@ async def learn(ctx, *, info):
     else:
         await ctx.send("❌ Only staff can teach me.")
 
-# --- AUTO-REPLY WHEN PINGED ---
+# --- AUTO-REPLY (Pinged or Replied) ---
 @bot.event
 async def on_message(message):
     if message.author == bot.user:
         return
 
-    # If someone pings the bot
-    if bot.user.mentioned_in(message):
+    is_reply_to_bot = (
+        message.reference
+        and message.reference.resolved
+        and message.reference.resolved.author == bot.user
+    )
+
+    if bot.user.mentioned_in(message) or is_reply_to_bot:
         user_question = message.content.replace(f"<@{bot.user.id}>", "").strip()
 
         if not user_question:
