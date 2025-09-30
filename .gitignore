@@ -1,0 +1,22 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+
+# Virtual environments
+.env
+venv/
+.venv/
+env/
+ENV/
+
+# Project files we don’t want public
+knowledge.json
+
+# OS / IDE files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
